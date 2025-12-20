@@ -5,7 +5,7 @@ import base64
 import time
 import streamlit.components.v1 as components
 import io
-from services.api import fetch_user_id, fetch_activations, fetch_honor_roll
+from services.api import fetch_user_id, fetch_activations
 from services.data import (
     get_points_total,
     get_most_qsos_activation,
@@ -34,10 +34,6 @@ def fetch_user_id_cached(callsign):
 @st.cache_data(show_spinner=False)
 def fetch_activations_cached(user_id):
     return fetch_activations(user_id)
-
-@st.cache_data(show_spinner=False)
-def fetch_honor_roll_cached():
-    return fetch_honor_roll()
 
 # -----------------------------
 # Cache computation functions

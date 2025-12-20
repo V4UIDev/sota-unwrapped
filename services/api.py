@@ -35,11 +35,17 @@ def fetch_honor_roll() -> list:
         response = httpx.get(url, timeout=10.0)
         response.raise_for_status()
         data = response.json()
+        sanitized_data = []
+
+        for entry in data:
+            sanitized_entry = entry.copy()
+            sanitized_entry.pop("Username", None)
+            sanitized_data.append(sanitized_entry)
 
         # Save to disk
         HONOR_ROLL_FILE.parent.mkdir(exist_ok=True)
         with open(HONOR_ROLL_FILE, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2)
+            json.dump(sanitized_data, f, indent=2)
 
         return data
 
