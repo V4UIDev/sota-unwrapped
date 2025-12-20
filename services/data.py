@@ -52,7 +52,7 @@ def most_popular_month_with_season(activation_data):
     elif month_number in [12, 1, 2]:
         season = "Winter"
     else:
-        season = "Other"
+        season = "Awesome"
 
     return most_common_month_str, season, count
 
