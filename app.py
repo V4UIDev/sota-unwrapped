@@ -4,7 +4,6 @@ import pandas as pd
 import base64
 import time
 import streamlit.components.v1 as components
-from PIL import Image, ImageDraw, ImageFont
 import io
 from services.api import fetch_user_id, fetch_activations, fetch_honor_roll
 from services.data import (
@@ -215,7 +214,7 @@ if slide["type"] == "chart":
             x=alt.X("QSOsAnimated:Q", title="Number of QSOs", scale=alt.Scale(domain=[0, x_max])),
             y=alt.Y("Band:N", sort="-x", title="Band")
         ).properties(height=400)
-        placeholder.altair_chart(chart, use_container_width=True)
+        placeholder.altair_chart(chart, width='stretch')
         time.sleep(0.02)
 
 elif slide["type"] == "metric":
