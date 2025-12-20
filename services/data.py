@@ -141,4 +141,30 @@ def get_qsos_per_band(activation_data):
     df["Band"] = pd.Categorical(df["Band"], categories=band_order, ordered=True)
     df = df.sort_values("Band").reset_index(drop=True)
 
-    return df
+    if not df.empty:
+        most_popular_row = df.loc[df["QSOs"].idxmax()]
+        most_popular_band = most_popular_row["Band"]
+        most_popular_band_qsos = int(most_popular_row["QSOs"])
+    else:
+        most_popular_band = None
+        most_popular_band_qsos = 0
+
+    return df, most_popular_band, most_popular_band_qsos
+
+def get_qso_stats(activation_data):
+    qso_total = 0
+    activation_count = 0
+
+    for activation in activation_data:
+        qsos = activation.get("QSOs")
+        if qsos is None:
+            continue  # skip malformed entries
+
+        qso_total += qsos
+        activation_count += 1
+
+    average_qsos = round(
+    qso_total / activation_count, 2
+)
+
+    return qso_total, average_qsos
