@@ -272,7 +272,7 @@ elif wrapped_type == "Chaser":
             "value": total_chaser_points,
             "emoji": "🏆",
             "color": "#1DB954",
-            "description": f"Placeholder for testing!"
+            "description": f"That's a lot of happy Activators!"
         },
         {
             "title": "Total QSOs 📡",
