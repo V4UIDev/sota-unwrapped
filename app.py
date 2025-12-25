@@ -141,7 +141,6 @@ wrapped_type = st.session_state.wrapped_type
 # Fetch user data
 # -----------------------------
 user_id = fetch_user_id(callsign)
-print(user_id)
 if user_id is None:
     user_id = fetch_user_id_honor_roll(callsign)
 if wrapped_type == "Activator":
@@ -149,7 +148,6 @@ if wrapped_type == "Activator":
     s2s_data = fetch_s2s_data_cached(user_id)
 elif wrapped_type == "Chaser":
     chaser_data = fetch_chaser_data_cached(user_id)
-print(s2s_data)
 
 # Precompute metrics
 if wrapped_type == "Activator":
