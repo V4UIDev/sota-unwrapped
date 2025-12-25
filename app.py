@@ -140,7 +140,8 @@ wrapped_type = st.session_state.wrapped_type
 # -----------------------------
 # Fetch user data
 # -----------------------------
-user_id = fetch_user_id_cached(callsign)
+user_id = fetch_user_id(callsign)
+print(user_id)
 if user_id is None:
     user_id = fetch_user_id_honor_roll(callsign)
 if wrapped_type == "Activator":
@@ -148,20 +149,23 @@ if wrapped_type == "Activator":
     s2s_data = fetch_s2s_data_cached(user_id)
 elif wrapped_type == "Chaser":
     chaser_data = fetch_chaser_data_cached(user_id)
+print(s2s_data)
 
 # Precompute metrics
 if wrapped_type == "Activator":
     total_activator_points = get_total_activator_points_cached(activation_data)
-    total_s2s_points = get_total_s2s_points_cached(s2s_data)
     most_qsos_activation = get_most_qsos_cached(activation_data)
     num_activations = count_activations(activation_data)
-    num_s2s_qsos = count_s2s_qsos(s2s_data)
     qso_total, average_qsos_per_activation = get_activator_qso_stats_cached(activation_data)
     popular_month, season, activations_count = most_popular_month_with_season(activation_data)
     percentile, bucket = get_percentile_bucket(total_activator_points)
     total_vertical = get_total_elevation_cached(activation_data)
     qsos_df, most_popular_band, most_popular_band_qsos = get_qsos_per_band_cached(activation_data)
     qsos_df_mode, most_popular_mode, most_popular_mode_qsos = get_qsos_per_mode_cached(activation_data)
+    if s2s_data != []:
+        num_s2s_qsos = count_s2s_qsos(s2s_data)
+        total_s2s_points = get_total_s2s_points_cached(s2s_data)
+
 elif wrapped_type == "Chaser":
     total_chaser_points = get_total_chaser_points_cached(chaser_data)
     percentile, bucket = get_chaser_percentile_bucket(total_chaser_points)
@@ -175,7 +179,7 @@ elif wrapped_type == "Chaser":
 # -----------------------------
 # Slides content
 # -----------------------------
-if wrapped_type == "Activator":
+if wrapped_type == "Activator" and s2s_data != []:
     slides = [
         {
             "title": f"{callsign}'s 2025 SOTA Activator Unwrapped ✨",
@@ -212,6 +216,88 @@ if wrapped_type == "Activator":
             "emoji": "🔺",
             "color": "#C2410C",
             "description": f"You made {total_s2s_points} S2S points"
+        },
+        {
+            "title": "Your Busiest Month 📆",
+            "type": "metric",
+            "metric": popular_month,
+            "value": f"{activations_count} activations",
+            "emoji": "🌞" if season=="Summer" else "❄️" if season=="Winter" else "🌄",
+            "color": "#FFA500",
+            "description": f"{season} vibes for your activations!"
+        },
+        {
+            "title": "QSOs per Band 📶",
+            "type": "band_chart",
+            "chart_data": qsos_df,
+            "description": "Here’s how your QSOs were distributed across bands:"
+        },
+        {
+            "title": "Percentile & Rank 🙌",
+            "type": "metric",
+            "metric": f"{bucket} percentile",
+            "value": f"{percentile:.1f}%",
+            "emoji": "🙌",
+            "color": "#FFD700",
+            "description": "Compared to all activators"
+        },
+        {
+            "title": "Cumulative height of summits activated 🏔️",
+            "type": "metric",
+            "metric": "Cumulative summit height",
+            "value": total_vertical,
+            "emoji": "⛰️",
+            "color": "#00BFFF",
+            "description": "Reach for the stars"
+        },
+        {
+            "title": "Your Favourite Band 🥁",
+            "type": "metric",
+            "metric": f"it accounted for {most_popular_band_qsos} QSOs",
+            "value": f"{most_popular_band}",
+            "emoji": "🤘",
+            "color": "#00A8A8",
+            "description": "Yeah, not that type of band..."
+        },
+        {
+            "title": "QSOs per Mode 📶",
+            "type": "mode_chart",
+            "chart_data": qsos_df_mode,
+            "description": "Here’s how your QSOs were distributed across modes:"
+        },
+        {
+        "title": "Your SOTA Activator Unwrapped",
+        "type": "share"
+        },
+    ]
+elif wrapped_type == "Activator":
+    slides = [
+        {
+            "title": f"{callsign}'s 2025 SOTA Activator Unwrapped ✨",
+            "type": "metric",
+            "metric": "Total Points",
+            "value": total_activator_points,
+            "emoji": "🏆",
+            "color": "#1DB954",
+            "description": f"You did {num_activations} activations this year"
+        },
+        {
+            "title": "Highest QSO Activation 📡",
+            "type": "metric",
+            "metric": most_qsos_activation["Summit"],
+            "value": most_qsos_activation["QSOs"],
+            "emoji": "⚡",
+            "color": "#FF6F61",
+            "description": "QSOs made on this summit"
+        },
+        {
+            "title": "Total QSOs 📡",
+            "type": "metric",
+            "metric": "Total QSOs this year",
+            "value": qso_total,
+            "emoji": "🗣️",
+            "color": "#7B3FE4",
+            "description": f"Average {average_qsos_per_activation:.2f} QSOs per activation"
         },
         {
             "title": "Your Busiest Month 📆",
