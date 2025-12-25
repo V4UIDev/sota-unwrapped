@@ -359,3 +359,23 @@ def count_unique_summits(chaser_data) -> int:
             unique_summits.add(summit_code)
 
     return len(unique_summits)
+
+def fetch_user_id_honor_roll(callsign: str) -> str | None:
+    callsign = callsign.upper().strip()
+
+    for file_path in (HONOR_ROLL_FILE, CHASER_HONOR_ROLL_FILE):
+        if not file_path.exists():
+            continue
+
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+            for entry in data:
+                if entry.get("Callsign", "").upper() == callsign:
+                    return entry.get("UserID")
+
+        except (json.JSONDecodeError, OSError) as e:
+            print(f"Error reading {file_path}: {e}")
+
+    return None

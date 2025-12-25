@@ -21,7 +21,8 @@ from services.data import (
     get_activator_qso_stats,
     count_s2s_qsos,
     count_chaser_qsos,
-    count_unique_summits
+    count_unique_summits,
+    fetch_user_id_honor_roll
 )
 
 with open("data/logo.png", "rb") as f:
@@ -140,6 +141,8 @@ wrapped_type = st.session_state.wrapped_type
 # Fetch user data
 # -----------------------------
 user_id = fetch_user_id_cached(callsign)
+if user_id is None:
+    user_id = fetch_user_id_honor_roll(callsign)
 if wrapped_type == "Activator":
     activation_data = fetch_activations_cached(user_id)
     s2s_data = fetch_s2s_data_cached(user_id)
